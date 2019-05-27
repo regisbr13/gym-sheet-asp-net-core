@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using GymSheet;
+using GymSheet.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Rotativa.AspNetCore;
 
 namespace GymSheet
 {
@@ -36,9 +38,18 @@ namespace GymSheet
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddDbContext<context>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnDB")));
+            services.AddDbContext<Context>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnDB")));
 
-            services.AddScoped<Class1>();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.LoginPath = "/Administrators/Login";
+            });
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromHours(1);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,12 +68,16 @@ namespace GymSheet
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseSession();
+            app.UseAuthentication();
+
+            RotativaConfiguration.Setup(env);
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Administrator}/{action=Login}/{id?}");
             });
         }
     }
