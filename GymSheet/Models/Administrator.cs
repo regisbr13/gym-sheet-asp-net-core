@@ -9,12 +9,12 @@ namespace GymSheet.Models
 
         [Required(ErrorMessage ="campo obrigatório")]
         [Display(Name = "Nome")]
-        [StringLength(255, ErrorMessage ="use até {1} caracteres")]
+        [StringLength(50, ErrorMessage ="use até {1} caracteres")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "campo obrigatório")]
         [Display(Name = "Email")]
-        [StringLength(255, ErrorMessage = "use até {1} caracteres")]
+        [StringLength(50, ErrorMessage = "use até {1} caracteres")]
         [EmailAddress(ErrorMessage ="entre com um email válido")]
         public string Email { get; set; }
 

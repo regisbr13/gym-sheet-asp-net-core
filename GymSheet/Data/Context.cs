@@ -1,9 +1,6 @@
-﻿using GymSheet.Models;
+﻿using GymSheet.Data.Maps;
+using GymSheet.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GymSheet.Data
 {
@@ -12,7 +9,7 @@ namespace GymSheet.Data
         public DbSet<Administrator> Administrators { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<MuscleGroup> MuscleGroups { get; set; }
-        public DbSet<Excercise> Excercises { get; set; }
+        public DbSet<Exercise> Excercises { get; set; }
         public DbSet<ExcerciseList> ExcerciseLists { get; set; }
         public DbSet<Objective> Objectives { get; set; }
         public DbSet<Sheet> Sheets { get; set; }
@@ -20,6 +17,19 @@ namespace GymSheet.Data
 
         public Context(DbContextOptions options) : base(options)
         {
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new AdministratorMap());
+            modelBuilder.ApplyConfiguration(new ExerciseListMap());
+            modelBuilder.ApplyConfiguration(new ExerciseMap());
+            modelBuilder.ApplyConfiguration(new MuscleGroupMap());
+            modelBuilder.ApplyConfiguration(new ObjectiveMap());
+            modelBuilder.ApplyConfiguration(new SheetMap());
+            modelBuilder.ApplyConfiguration(new StudentMap());
+            modelBuilder.ApplyConfiguration(new TeacherMap());
         }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GymSheet.Models
 {
-    public class Excercise
+    public class Exercise
     {
         public int Id { get; set; }
 

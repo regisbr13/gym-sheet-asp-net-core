@@ -16,6 +16,11 @@ namespace GymSheet.Models
         public string ImgPath { get; set; }
 
         [Required(ErrorMessage = "campo obrigatório")]
+        [Display(Name = "Turno")]
+        [StringLength(15, ErrorMessage = "use até {1} caracteres")]
+        public string Period { get; set; }
+
+        [Required(ErrorMessage = "campo obrigatório")]
         [Display(Name = "Telefone")]
         [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }

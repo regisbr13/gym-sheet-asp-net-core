@@ -24,6 +24,6 @@ namespace GymSheet.Models
 
         public int ExcerciseId { get; set; }
 
-        public Excercise Excercise { get; set; }
+        public Exercise Excercise { get; set; }
     }
 }

@@ -9,11 +9,11 @@ namespace GymSheet.Models
 
         [Required(ErrorMessage = "campo obrigatório")]
         [Display(Name = "Nome")]
-        [StringLength(255, ErrorMessage = "use até {1} caracteres")]
+        [StringLength(50, ErrorMessage = "use até {1} caracteres")]
         public string Name { get; set; }
 
         [Display(Name = "Observação")]
-        [StringLength(255, ErrorMessage = "use até {1} caracteres")]
+        [StringLength(50, ErrorMessage = "use até {1} caracteres")]
         public string Observation { get; set; }
 
         public ICollection<Student> Students { get; set; }

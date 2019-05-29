@@ -8,7 +8,7 @@ namespace GymSheet.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "campo obrigatório")]
-        [Display(Name = "Nome")]
+        [Display(Name = "Nome completo")]
         [StringLength(100, ErrorMessage = "use até {1} caracteres")]
         public string Name { get; set; }
 
