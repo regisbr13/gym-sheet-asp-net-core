@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using GymSheet.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Rotativa.AspNetCore;
+using GymSheet.Services;
 
 namespace GymSheet
 {
@@ -50,6 +51,8 @@ namespace GymSheet
             {
                 options.IdleTimeout = TimeSpan.FromHours(1);
             });
+
+            services.AddScoped<MuscleGroupService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -77,7 +80,7 @@ namespace GymSheet
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Administrator}/{action=Login}/{id?}");
+                    template: "{controller=MuscleGroups}/{action=Index}/{id?}");
             });
         }
     }
