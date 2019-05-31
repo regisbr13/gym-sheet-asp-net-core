@@ -5,6 +5,6 @@ namespace GymSheet.Services.Interfaces
 {
     public interface IMuscleGroupService : IService<MuscleGroup>
     {
-        Task<bool> HasAnyName(string name);
+        Task<bool> HasAnyName(int? id, string name);
     }
 }

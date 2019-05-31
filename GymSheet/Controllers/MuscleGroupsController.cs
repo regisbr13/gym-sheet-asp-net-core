@@ -183,9 +183,9 @@ namespace GymSheet.Controllers
         }
 
         // Grupo Muscular já existe:
-        public async Task<JsonResult> MuscleGroupExist(string name)
+        public async Task<JsonResult> MuscleGroupExist(int? Id, string Name)
         {
-            if (await _muscleGroupService.HasAnyName(name))
+            if (await _muscleGroupService.HasAnyName(Id, Name))
                 return Json("grupo muscular já cadastrado");
             return Json(true);
         }

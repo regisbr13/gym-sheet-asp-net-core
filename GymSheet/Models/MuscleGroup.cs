@@ -8,7 +8,7 @@ namespace GymSheet.Models
     {
         public int Id { get; set; }
 
-        [Remote("MuscleGroupExist", "MuscleGroups")]
+        [Remote("MuscleGroupExist", "MuscleGroups", AdditionalFields ="Id")]
         [Required(ErrorMessage = "campo obrigatório")]
         [Display(Name = "Nome")]
         [StringLength(50, ErrorMessage = "use até {1} caracteres")]

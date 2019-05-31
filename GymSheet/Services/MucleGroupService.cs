@@ -17,9 +17,9 @@ namespace GymSheet.Services
         }
 
         // Método para validação remota
-        public async Task<bool> HasAnyName(string name)
+        public async Task<bool> HasAnyName(int? Id, string name)
         {
-            return await _context.MuscleGroups.AnyAsync(mg => mg.Name.ToUpper() == name.ToUpper());
+            return await _context.MuscleGroups.AnyAsync(mg => mg.Id != Id && mg.Name == name);
         }
     }
 }
