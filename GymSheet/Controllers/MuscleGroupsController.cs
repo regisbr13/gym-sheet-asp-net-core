@@ -43,33 +43,6 @@ namespace GymSheet.Controllers
             return View(list);
         }
 
-        // Detalhar Get:
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id nulo" });
-            }
-
-            if (!_cache.TryGetValue("muscleGroup", out list))
-            {
-                list = await _muscleGroupService.FindAllAsync();
-                _cache.Set("muscleGroup", list, cacheOptions);
-            }
-            else
-            {
-                list = _cache.Get("muscleGroup") as List<MuscleGroup>;
-            }
-
-            var obj = list.Find(x => x.Id == id);
-            if (obj == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
-            }
-
-            return View(obj);
-        }
-
         // Criar Get:
         public IActionResult Create()
         {
@@ -185,8 +158,8 @@ namespace GymSheet.Controllers
         {
             try
             {
+                var obj = (_cache.Get("muscleGroup") as List<MuscleGroup>).Find(x => x.Id == id);
                 await _muscleGroupService.RemoveAsync(id);
-                var obj = await _muscleGroupService.FindByIdAsync(id);
                 TempData["confirm"] = obj.Name + " foi deletado com sucesso.";
                 list = await _muscleGroupService.FindAllAsync();
                 _cache.Set("muscleGroup", list, cacheOptions);

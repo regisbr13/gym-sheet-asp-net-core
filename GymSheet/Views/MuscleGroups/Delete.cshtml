@@ -1,0 +1,24 @@
+﻿@model GymSheet.Models.MuscleGroup
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Exluir Grupo Muscular</h4>
+        </div>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <div class="modal-body">
+                <p>Confirmar exclusão do grupo muscular <strong>@Model.Name</strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success btn-sm">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
