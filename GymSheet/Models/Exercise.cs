@@ -12,8 +12,10 @@ namespace GymSheet.Models
         [StringLength(50, ErrorMessage = "use até {1} caracteres")]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "é preciso cadastrar um grupo muscular primeiro")]
         public int MuscleGroupId { get; set; }
 
+        [Display(Name = "Grupo muscular")]
         public MuscleGroup MuscleGroup { get; set; }
 
         public ICollection<ExcerciseList> ExcerciseLists { get; set; }

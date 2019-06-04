@@ -54,6 +54,7 @@ namespace GymSheet
 
             services.AddScoped<MuscleGroupService>();
             services.AddScoped<AdministratorService>();
+            services.AddScoped<ExerciseService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -2,76 +2,106 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using GymSheet.Models;
 using GymSheet.Models.ViewModels;
 using GymSheet.Services;
 using GymSheet.Services.Exceptions;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace GymSheet.Controllers
 {
-    public class MuscleGroupsController : Controller
+    public class ExercisesController : Controller
     {
+        private readonly ExerciseService _exerciseService;
         private readonly MuscleGroupService _muscleGroupService;
         private readonly IMemoryCache _cache;
 
         // Tempo de duração do Cache
         private readonly MemoryCacheEntryOptions cacheOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(60));
         // Lista para guardar cache
-        private List<MuscleGroup> list;
+        private List<Exercise> list;
+        private List<MuscleGroup> list2;
 
-        public MuscleGroupsController(MuscleGroupService muscleGroupService, IMemoryCache cache)
+        public ExercisesController(ExerciseService exerciseService, MuscleGroupService muscleGroup, IMemoryCache cache)
         {
-            _muscleGroupService = muscleGroupService;
+            _exerciseService = exerciseService;
+            _muscleGroupService = muscleGroup;
             _cache = cache;
         }
 
         // Listar Get:
-        [Authorize]
         public async Task<IActionResult> Index()
         {
-            if (!_cache.TryGetValue("muscleGroup", out list))
+            if (!_cache.TryGetValue("exercise", out list))
             {
-                list = await _muscleGroupService.FindAllAsync();
-                _cache.Set("muscleGroup", list, cacheOptions);
+                list = await _exerciseService.FindAllAsync();
+                _cache.Set("exercise", list, cacheOptions);
             }
             else
             {
-                list = _cache.Get("muscleGroup") as List<MuscleGroup>;
+                list = _cache.Get("exercise") as List<Exercise>;
             }
-
-            HttpContext.Session.SetString("Email", "admin@admin.com");
-            var claims = new List<Claim>() { new Claim(ClaimTypes.Email, "admin@admin.com") };
-            var user = new ClaimsIdentity(claims, "login");
-            ClaimsPrincipal principal = new ClaimsPrincipal(user);
-            await HttpContext.SignInAsync(principal);
-
             return View(list);
         }
 
-        // Criar Get:
-        public IActionResult Create()
+        // Detalhar Get:
+        public async Task<IActionResult> Details(int? id)
         {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id nulo" });
+            }
+
+            if (!_cache.TryGetValue("exercise", out list))
+            {
+                list = await _exerciseService.FindAllAsync();
+                _cache.Set("exercise", list, cacheOptions);
+            }
+            else
+            {
+                list = _cache.Get("exercise") as List<Exercise>;
+            }
+
+            var obj = list.Find(x => x.Id == id);
+            if (obj == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            }
+
+            return View(obj);
+        }
+
+        // Criar Get:
+        public async Task<IActionResult> Create()
+        {
+            if (!_cache.TryGetValue("muscleGroup", out list2))
+            {
+                list2 = await _muscleGroupService.FindAllAsync();
+                _cache.Set("muscleGroup", list2, cacheOptions);
+            }
+            else
+            {
+                list2 = _cache.Get("muscleGroup") as List<MuscleGroup>;
+            }
+
+            ViewBag.MuscleGroupId = new SelectList(list2, "Id", "Name");
             return View();
         }
 
         // Criar Post: 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MuscleGroup obj)
+        public async Task<IActionResult> Create(Exercise obj)
         {
             if (ModelState.IsValid)
             {
                 TempData["confirm"] = obj.Name + " foi cadastrado com sucesso.";
-                await _muscleGroupService.InsertAsync(obj);
-                list = await _muscleGroupService.FindAllAsync();
-                _cache.Set("muscleGroup", list, cacheOptions);
+                await _exerciseService.InsertAsync(obj);
+                list = await _exerciseService.FindAllAsync();
+                _cache.Set("exercise", list, cacheOptions);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -87,14 +117,14 @@ namespace GymSheet.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id nulo" });
             }
 
-            if (!_cache.TryGetValue("muscleGroup", out list))
+            if (!_cache.TryGetValue("exercise", out list))
             {
-                list = await _muscleGroupService.FindAllAsync();
-                _cache.Set("muscleGroup", list, cacheOptions);
+                list = await _exerciseService.FindAllAsync();
+                _cache.Set("exercise", list, cacheOptions);
             }
             else
             {
-                list = _cache.Get("muscleGroup") as List<MuscleGroup>;
+                list = _cache.Get("exercise") as List<Exercise>;
             }
 
             var obj = list.Find(x => x.Id == id);
@@ -103,21 +133,35 @@ namespace GymSheet.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
 
+            if (!_cache.TryGetValue("muscleGroup", out list2))
+            {
+                list2 = await _muscleGroupService.FindAllAsync();
+                _cache.Set("muscleGroup", list2, cacheOptions);
+            }
+            else
+            {
+                list2 = _cache.Get("muscleGroup") as List<MuscleGroup>;
+            }
+
+            ViewBag.MuscleGroupId = new SelectList(list2, "Id", "Name");
+
             return View(obj);
         }
 
         // Editar Post:
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, MuscleGroup obj)
+        public async Task<IActionResult> Edit(int id, Exercise obj)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _muscleGroupService.UpdateAsync(obj);
+                    await _exerciseService.UpdateAsync(obj);
                     TempData["confirm"] = obj.Name + " foi editado com sucesso.";
-                    (_cache.Get("muscleGroup") as List<MuscleGroup>).Find(x => x.Id == obj.Id).Name = obj.Name;
+                    list = await _exerciseService.FindAllAsync();
+                    _cache.Set("exercise", list, cacheOptions);
+
                     return RedirectToAction(nameof(Index));
                 }
                 catch (ApplicationException e)
@@ -143,14 +187,14 @@ namespace GymSheet.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id nulo" });
             }
 
-            if (!_cache.TryGetValue("muscleGroup", out list))
+            if (!_cache.TryGetValue("exercise", out list))
             {
-                list = await _muscleGroupService.FindAllAsync();
-                _cache.Set("muscleGroup", list, cacheOptions);
+                list = await _exerciseService.FindAllAsync();
+                _cache.Set("exercise", list, cacheOptions);
             }
             else
             {
-                list = _cache.Get("muscleGroup") as List<MuscleGroup>;
+                list = _cache.Get("exercise") as List<Exercise>;
             }
 
             var obj = list.Find(x => x.Id == id);
@@ -169,10 +213,10 @@ namespace GymSheet.Controllers
         {
             try
             {
-                var obj = (_cache.Get("muscleGroup") as List<MuscleGroup>).Find(x => x.Id == id);
-                await _muscleGroupService.RemoveAsync(id);
+                await _exerciseService.RemoveAsync(id);
+                var obj = (_cache.Get("exercise") as List<Exercise>).Find(x => x.Id == id);
                 TempData["confirm"] = obj.Name + " foi deletado com sucesso.";
-                (_cache.Get("muscleGroup") as List<MuscleGroup>).Remove(obj);
+                (_cache.Get("exercise") as List<Exercise>).Remove(obj);
                 return RedirectToAction(nameof(Index));
             }
             catch (IntegrityException e)
@@ -190,14 +234,6 @@ namespace GymSheet.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModel);
-        }
-
-        // Grupo Muscular já existe:
-        public async Task<JsonResult> MuscleGroupExist(int? Id, string Name)
-        {
-            if (await _muscleGroupService.HasAnyName(Id, Name))
-                return Json("grupo muscular já cadastrado");
-            return Json(true);
         }
     }
 }
