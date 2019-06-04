@@ -35,7 +35,6 @@
                 <ul class="nav navbar-nav navbar-right nav-pills">
                     @if (!User.Identity.IsAuthenticated)
                     {
-                        <li><a asp-controller="Administrators" asp-action="Register"><span class="glyphicon glyphicon-user"></span> Registro</a></li>
                         <li><a asp-controller="Administrators" asp-action="Login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
                     }
                     else
@@ -50,7 +49,7 @@
                                 @HttpContextAccessor.HttpContext.Session.GetString("Email") <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu navbar-link">
-                                <li><a asp-controller="LoginInformations" asp-action="Index">Minhas informações</a></li>
+                                <li><a asp-controller="Administrators" asp-action="Informations">Minhas informações</a></li>
                                 <li><a asp-controller="Administrators" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Sair</a></li>
                             </ul>
                         </li>

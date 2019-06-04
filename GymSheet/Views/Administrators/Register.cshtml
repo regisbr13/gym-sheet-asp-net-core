@@ -1,0 +1,48 @@
+﻿@model GymSheet.Models.Administrator
+
+@{
+    ViewData["Title"] = "Registrar Administrador";
+}
+
+<h2>Registrar administrador</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Register">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmailConf" class="control-label"></label>
+                <input asp-for="EmailConf" class="form-control" />
+                <span asp-validation-for="EmailConf" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PasswordConf" class="control-label"></label>
+                <input asp-for="PasswordConf" class="form-control" />
+                <span asp-validation-for="PasswordConf" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Registrar" />
+                <a asp-action="Login" class="btn btn-link">Já sou registrado</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

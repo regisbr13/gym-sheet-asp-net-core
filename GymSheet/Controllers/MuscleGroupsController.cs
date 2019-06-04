@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using GymSheet.Models;
 using GymSheet.Models.ViewModels;
 using GymSheet.Services;
 using GymSheet.Services.Exceptions;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -29,6 +33,7 @@ namespace GymSheet.Controllers
         }
 
         // Listar Get:
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             if (!_cache.TryGetValue("muscleGroup", out list))
@@ -40,6 +45,13 @@ namespace GymSheet.Controllers
             {
                 list = _cache.Get("muscleGroup") as List<MuscleGroup>;
             }
+
+            HttpContext.Session.SetString("Email", "admin@admin.com");
+            var claims = new List<Claim>() { new Claim(ClaimTypes.Email, "admin@admin.com") };
+            var user = new ClaimsIdentity(claims, "login");
+            ClaimsPrincipal principal = new ClaimsPrincipal(user);
+            await HttpContext.SignInAsync(principal);
+
             return View(list);
         }
 
