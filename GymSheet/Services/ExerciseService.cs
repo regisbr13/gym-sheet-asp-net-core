@@ -21,5 +21,10 @@ namespace GymSheet.Services
         {
             return await _context.Excercises.Include(e => e.MuscleGroup).ToListAsync();
         }
+
+        public Task<bool> HasAny(int? id, string name)
+        {
+            return _context.Excercises.AnyAsync(e => e.Id != id  && e.Name == name);
+        }
     }
 }

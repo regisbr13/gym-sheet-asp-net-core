@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GymSheet.Models
@@ -10,6 +11,7 @@ namespace GymSheet.Models
         [Required(ErrorMessage = "campo obrigatório")]
         [Display(Name = "Nome")]
         [StringLength(50, ErrorMessage = "use até {1} caracteres")]
+        [Remote("ExerciseExist", "Exercises", AdditionalFields = "Id")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "é preciso cadastrar um grupo muscular primeiro")]

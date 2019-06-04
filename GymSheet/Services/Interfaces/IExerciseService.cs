@@ -7,5 +7,6 @@ namespace GymSheet.Services.Interfaces
     interface IExerciseService : IService<Exercise>
     {
         new Task<List<Exercise>> FindAllAsync();
+        Task<bool> HasAny(int? id, string name);
     }
 }

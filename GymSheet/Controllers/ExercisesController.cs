@@ -235,5 +235,13 @@ namespace GymSheet.Controllers
             };
             return View(viewModel);
         }
+
+        // Exercício já existe:
+        public async Task<JsonResult> ExerciseExist(int? Id, string Name)
+        {
+            if (await _exerciseService.HasAny(Id, Name))
+                return Json("exercício já cadastrado");
+            return Json(true);
+        }
     }
 }
