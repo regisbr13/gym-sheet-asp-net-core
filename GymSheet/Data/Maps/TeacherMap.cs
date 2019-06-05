@@ -15,7 +15,7 @@ namespace GymSheet.Data.Maps
 
             builder.Property(t => t.Period).HasMaxLength(15).IsRequired();
             builder.Property(t => t.Phone).IsRequired();
-            builder.Property(t => t.ImgPath).IsRequired();
+            builder.Property(t => t.ImgPath).IsRequired(false);
 
             builder.HasMany(t => t.Students).WithOne(t => t.Teacher);
 

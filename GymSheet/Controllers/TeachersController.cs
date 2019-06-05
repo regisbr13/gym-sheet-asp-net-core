@@ -1,80 +1,110 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GymSheet.Models;
 using GymSheet.Models.ViewModels;
 using GymSheet.Services;
 using GymSheet.Services.Exceptions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace GymSheet.Controllers
 {
-    public class ExercisesController : Controller
+    public class TeachersController : Controller
     {
-        private readonly ExerciseService _exerciseService;
-        private readonly MuscleGroupService _muscleGroupService;
+        private readonly TeacherService _teacherService;
+        private IHostingEnvironment _environment;
         private readonly IMemoryCache _cache;
 
         // Tempo de duração do Cache
         private readonly MemoryCacheEntryOptions cacheOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(60));
         // Lista para guardar cache
-        private List<Exercise> list;
-        private List<MuscleGroup> list2;
+        private List<Teacher> list;
 
-        public ExercisesController(ExerciseService exerciseService, MuscleGroupService muscleGroup, IMemoryCache cache)
+        public TeachersController(TeacherService teacherService, IHostingEnvironment environment, IMemoryCache cache)
         {
-            _exerciseService = exerciseService;
-            _muscleGroupService = muscleGroup;
+            _teacherService = teacherService;
+            _environment = environment;
             _cache = cache;
         }
 
         // Listar Get:
         public async Task<IActionResult> Index()
         {
-            if (!_cache.TryGetValue("exercise", out list))
+            if (!_cache.TryGetValue("teacher", out list))
             {
-                list = await _exerciseService.FindAllAsync();
-                _cache.Set("exercise", list, cacheOptions);
+                list = await _teacherService.FindAllAsync();
+                _cache.Set("teacher", list, cacheOptions);
             }
             else
             {
-                list = _cache.Get("exercise") as List<Exercise>;
+                list = _cache.Get("teacher") as List<Teacher>;
             }
             return View(list);
         }
 
-        // Criar Get:
-        public async Task<IActionResult> Create()
+        // Detalhar Get:
+        public async Task<IActionResult> Details(int? id)
         {
-            if (!_cache.TryGetValue("muscleGroup", out list2))
+            if (id == null)
             {
-                list2 = await _muscleGroupService.FindAllAsync();
-                _cache.Set("muscleGroup", list2, cacheOptions);
+                return RedirectToAction(nameof(Error), new { message = "Id nulo" });
+            }
+
+            if (!_cache.TryGetValue("teacher", out list))
+            {
+                list = await _teacherService.FindAllAsync();
+                _cache.Set("teacher", list, cacheOptions);
             }
             else
             {
-                list2 = _cache.Get("muscleGroup") as List<MuscleGroup>;
+                list = _cache.Get("teacher") as List<Teacher>;
             }
 
-            ViewBag.MuscleGroupId = new SelectList(list2, "Id", "Name");
+            var obj = list.Find(x => x.Id == id);
+            if (obj == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            }
+
+            return View(obj);
+        }
+
+        // Criar Get:
+        public IActionResult Create()
+        {
             return View();
         }
 
         // Criar Post: 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Exercise obj)
+        public async Task<IActionResult> Create(Teacher obj, IFormFile img)
         {
             if (ModelState.IsValid)
             {
+                if(img != null)
+                {
+                    var path = Path.Combine(_environment.WebRootPath, "images");
+                    using(var fs = new FileStream(Path.Combine(path, obj.Id.ToString() + img.FileName), FileMode.Create))
+                    {
+                        await img.CopyToAsync(fs);
+                        obj.ImgPath = "~/images/" + obj.Id.ToString() + img.FileName;
+                    }
+                }
+                else
+                {
+                    obj.ImgPath = "~/images/avatar-icon.png";
+                }
                 TempData["confirm"] = obj.Name + " foi cadastrado com sucesso.";
-                await _exerciseService.InsertAsync(obj);
-                list = await _exerciseService.FindAllAsync();
-                _cache.Set("exercise", list, cacheOptions);
+                await _teacherService.InsertAsync(obj);
+                list = await _teacherService.FindAllAsync();
+                _cache.Set("teacher", list, cacheOptions);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -90,33 +120,22 @@ namespace GymSheet.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id nulo" });
             }
 
-            if (!_cache.TryGetValue("exercise", out list))
+            if (!_cache.TryGetValue("teacher", out list))
             {
-                list = await _exerciseService.FindAllAsync();
-                _cache.Set("exercise", list, cacheOptions);
+                list = await _teacherService.FindAllAsync();
+                _cache.Set("teacher", list, cacheOptions);
             }
             else
             {
-                list = _cache.Get("exercise") as List<Exercise>;
+                list = _cache.Get("teacher") as List<Teacher>;
             }
 
             var obj = list.Find(x => x.Id == id);
+            TempData["img"] = obj.ImgPath;
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
-
-            if (!_cache.TryGetValue("muscleGroup", out list2))
-            {
-                list2 = await _muscleGroupService.FindAllAsync();
-                _cache.Set("muscleGroup", list2, cacheOptions);
-            }
-            else
-            {
-                list2 = _cache.Get("muscleGroup") as List<MuscleGroup>;
-            }
-
-            ViewBag.MuscleGroupId = new SelectList(list2, "Id", "Name");
 
             return View(obj);
         }
@@ -124,16 +143,30 @@ namespace GymSheet.Controllers
         // Editar Post:
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Exercise obj)
+        public async Task<IActionResult> Edit(int id, Teacher obj, IFormFile img)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _exerciseService.UpdateAsync(obj);
+                    if (img != null)
+                    {
+                        var path = Path.Combine(_environment.WebRootPath, "images");
+                        using (var fs = new FileStream(Path.Combine(path, obj.Id.ToString() + img.FileName), FileMode.Create))
+                        {
+                            await img.CopyToAsync(fs);
+                            obj.ImgPath = "~/images/" + obj.Id.ToString() + img.FileName;
+                        }
+                    }
+                    else
+                    {
+                        obj.ImgPath = TempData["img"].ToString();
+                    }
+
+                    await _teacherService.UpdateAsync(obj);
                     TempData["confirm"] = obj.Name + " foi editado com sucesso.";
-                    list = await _exerciseService.FindAllAsync();
-                    _cache.Set("exercise", list, cacheOptions);
+                    list = await _teacherService.FindAllAsync();
+                    _cache.Set("teacher", list, cacheOptions);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -160,14 +193,14 @@ namespace GymSheet.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id nulo" });
             }
 
-            if (!_cache.TryGetValue("exercise", out list))
+            if (!_cache.TryGetValue("teacher", out list))
             {
-                list = await _exerciseService.FindAllAsync();
-                _cache.Set("exercise", list, cacheOptions);
+                list = await _teacherService.FindAllAsync();
+                _cache.Set("teacher", list, cacheOptions);
             }
             else
             {
-                list = _cache.Get("exercise") as List<Exercise>;
+                list = _cache.Get("teacher") as List<Teacher>;
             }
 
             var obj = list.Find(x => x.Id == id);
@@ -186,10 +219,10 @@ namespace GymSheet.Controllers
         {
             try
             {
-                await _exerciseService.RemoveAsync(id);
-                var obj = (_cache.Get("exercise") as List<Exercise>).Find(x => x.Id == id);
+                await _teacherService.RemoveAsync(id);
+                var obj = (_cache.Get("teacher") as List<Teacher>).Find(x => x.Id == id);
                 TempData["confirm"] = obj.Name + " foi deletado com sucesso.";
-                (_cache.Get("exercise") as List<Exercise>).Remove(obj);
+                (_cache.Get("teacher") as List<Teacher>).Remove(obj);
                 return RedirectToAction(nameof(Index));
             }
             catch (IntegrityException e)
@@ -207,14 +240,6 @@ namespace GymSheet.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModel);
-        }
-
-        // Exercício já existe:
-        public async Task<JsonResult> ExerciseExist(int? Id, string Name)
-        {
-            if (await _exerciseService.HasAny(Id, Name))
-                return Json("exercício já cadastrado");
-            return Json(true);
         }
     }
 }

@@ -1,0 +1,70 @@
+﻿@model IEnumerable<GymSheet.Models.Teacher>
+
+@{
+    ViewData["Title"] = "Professores";
+}
+
+<h2 class="text-center text-primary">Professores</h2>
+
+@if (TempData["confirm"] != null)
+{
+    <p class="alert alert-success h6">@TempData["confirm"]</p>
+}
+@if (TempData["erro"] != null)
+{
+    <p class="alert alert-danger h6">@TempData["erro"]</p>
+}
+
+<hr />
+<p>
+    <a class="btn btn-primary btn-sm createTeacher">Cadastrar novo</a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ImgPath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Period)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@Url.Content(item.ImgPath)" width="80" height="80" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Period)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td class="btn-group-sm">
+                    <a data-id="@item.Id" class="btn btn-info editTeacher">Editar</a> |
+                    <a data-id="@item.Id" class="btn btn-danger deleteTeacher">Deletar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="modal" role="dialog"></div>
+
+@section Scripts{
+    <script src="~/js/Scripts.js"></script>
+}
