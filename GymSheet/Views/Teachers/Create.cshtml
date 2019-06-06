@@ -15,12 +15,12 @@
                 <div class="form-horizontal">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <p class="text-center">
-                        <img class="img" id="load" src="~/images/avatar-icon.png" alt="Foto de perfil" width="100" height="100"/>
+                        <img class="img" id="load" src="~/images/avatar-icon.png" alt="Foto de perfil" width="100" height="100" />
                     </p>
                     <div class="form-group">
                         <label asp-for="ImgPath" class="control-label col-md-3"></label>
                         <div class="col-md-7">
-                            <input asp-for="ImgPath" type="file" name="img" class="form-control" onchange="LoadImg(this)"/>
+                            <input asp-for="ImgPath" type="file" name="img" class="form-control" onchange="LoadImg(this)" />
                             <span asp-validation-for="ImgPath" class="text-danger"></span>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                     <div class="form-group">
                         <label asp-for="Phone" class="control-label col-md-3"></label>
                         <div class="col-md-7">
-                            <input asp-for="Phone" class="form-control" />
+                            <input asp-for="Phone" class="form-control phone"/>
                             <span asp-validation-for="Phone" class="text-danger"></span>
                         </div>
                     </div>
@@ -60,4 +60,9 @@
 </div>
 
 @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+<script>
+    $(function () {
+        $(".phone").mask("(99) 9 9999-9999");
+    });
+</script>

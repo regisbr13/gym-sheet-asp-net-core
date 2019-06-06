@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GymSheet.Models
@@ -7,6 +8,7 @@ namespace GymSheet.Models
     {
         public int Id { get; set; }
 
+        [Remote("TeacherExist", "Teachers", AdditionalFields = "Id")]
         [Required(ErrorMessage = "campo obrigatório")]
         [Display(Name = "Nome")]
         [StringLength(50, ErrorMessage = "use até {1} caracteres")]
@@ -22,7 +24,6 @@ namespace GymSheet.Models
 
         [Required(ErrorMessage = "campo obrigatório")]
         [Display(Name = "Telefone")]
-        [DataType(DataType.PhoneNumber)]
         public string Phone { get; set; }
 
         public ICollection<Student> Students { get; set; }

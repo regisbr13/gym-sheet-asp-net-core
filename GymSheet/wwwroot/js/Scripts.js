@@ -86,3 +86,30 @@ $(function () {
         })
     })
 });
+
+$(function () {
+    $(".createObj").click(function () {
+        $("#modal").load("/Objectives/Create", function () {
+            $("#modal").modal();
+        })
+    })
+});
+
+$(function () {
+    $(".editObj").click(function () {
+        var id = $(this).attr("data-id");
+        $("#modal").load("/Objectives/Edit?Id=" + id, function () {
+            $("#modal").modal();
+        })
+    })
+});
+
+$(function () {
+    $(".deleteObj").click(function () {
+        var id = $(this).attr("data-id");
+        $("#modal").load("/Objectives/Delete?Id=" + id, function () {
+            $("#modal").modal();
+        })
+    })
+});
+
