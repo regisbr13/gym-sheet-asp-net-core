@@ -43,33 +43,6 @@ namespace GymSheet.Controllers
             return View(list);
         }
 
-        // Detalhar Get:
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id nulo" });
-            }
-
-            if (!_cache.TryGetValue("objective", out list))
-            {
-                list = await _objectiveService.FindAllAsync();
-                _cache.Set("objective", list, cacheOptions);
-            }
-            else
-            {
-                list = _cache.Get("objective") as List<Objective>;
-            }
-
-            var obj = list.Find(x => x.Id == id);
-            if (obj == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
-            }
-
-            return View(obj);
-        }
-
         // Criar Get:
         public IActionResult Create()
         {

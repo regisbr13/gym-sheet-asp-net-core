@@ -18,11 +18,13 @@ namespace GymSheet.Models
 
         [Display(Name = "Peso")]
         [Range(20, 200, ErrorMessage = "peso inválido")]
+        [Required(ErrorMessage ="campo obrigatório")]
         public double Weight { get; set; }
 
         [Display(Name = "Altura")]
         [Range(1, 2.5, ErrorMessage = "altura inválida")]
-        public int Height { get; set; }
+        [Required(ErrorMessage = "campo obrigatório")]
+        public double Height { get; set; }
 
         [Display(Name = "Frequência semanal")]
         [Range(1, 7, ErrorMessage = "frequência inválida")]
@@ -30,10 +32,12 @@ namespace GymSheet.Models
 
         public int TeacherId { get; set; }
 
+        [Display(Name = "Professor")]
         public Teacher Teacher { get; set; }
 
         public int ObjectiveId { get; set; }
 
+        [Display(Name = "Objetivo")]
         public Objective Objective { get; set; }
 
         public ICollection<Sheet> Sheets { get; set; }

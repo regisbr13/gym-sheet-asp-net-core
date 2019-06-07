@@ -1,0 +1,87 @@
+﻿@model GymSheet.Models.Student
+
+@{
+    Layout = null;
+}
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Cadastrar Aluno</h4>
+        </div>
+        <form asp-action="Create">
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Age" class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <input asp-for="Age" class="form-control" />
+                            <span asp-validation-for="Age" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Weight" class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <input asp-for="Weight" class="form-control weight" onkeyup="k(this)"/>
+                            <span asp-validation-for="Weight" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Height" class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <input asp-for="Height" class="form-control" onkeyup="k(this)"/>
+                            <span asp-validation-for="Height" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="WeeklyFrequency" class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <select asp-for="WeeklyFrequency" class="form-control">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                            </select>
+                            <span asp-validation-for="WeeklyFrequency" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Teacher" class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <select asp-for="TeacherId" asp-items="ViewBag.teachers" class="form-control"></select>
+                            <span asp-validation-for="TeacherId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Objective" class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <select asp-for="ObjectiveId" asp-items="ViewBag.objectives" class="form-control"></select>
+                            <span asp-validation-for="ObjectiveId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success btn-sm">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script src="~/js/Scripts.js"></script>
+

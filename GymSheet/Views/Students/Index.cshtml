@@ -1,0 +1,88 @@
+﻿@model IEnumerable<GymSheet.Models.Student>
+
+@{
+    ViewData["Title"] = "Alunos";
+}
+
+<h2 class="text-center text-primary">Alunos</h2>
+
+@if (TempData["confirm"] != null)
+{
+    <p class="alert alert-success h6">@TempData["confirm"]</p>
+}
+@if (TempData["erro"] != null)
+{
+    <p class="alert alert-danger h6">@TempData["erro"]</p>
+}
+<hr />
+<p>
+    <a class="btn btn-primary btn-sm createStudent">Cadastrar novo</a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Age)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Height)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WeeklyFrequency)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Teacher)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Objective)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Age)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Height)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WeeklyFrequency)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Teacher.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Objective.Name)
+                </td>
+                <td>
+                    <a  asp-controller="Sheets" asp-action="Index" asp-route-id="@item.Id" class="btn btn-sm btn-success">Fichas</a> |
+                    <a data-id="@item.Id" class="btn btn-sm btn-info editStudent">Editar</a> |
+                    <a data-id="@item.Id" class="btn btn-sm btn-danger deleteStudent">Deletar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="modal" role="dialog"></div>
+
+@section Scripts{
+    <script src="~/js/Scripts.js"></script>
+}

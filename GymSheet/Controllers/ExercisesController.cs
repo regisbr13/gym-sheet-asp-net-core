@@ -20,7 +20,7 @@ namespace GymSheet.Controllers
         private readonly IMemoryCache _cache;
 
         // Tempo de duração do Cache
-        private readonly MemoryCacheEntryOptions cacheOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(60));
+        private readonly MemoryCacheEntryOptions cacheOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromSeconds(70));
         // Lista para guardar cache
         private List<Exercise> list;
         private List<MuscleGroup> list2;
