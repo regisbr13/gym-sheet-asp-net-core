@@ -72,7 +72,7 @@
                     @Html.DisplayFor(modelItem => item.Objective.Name)
                 </td>
                 <td>
-                    <a  asp-controller="Sheets" asp-action="Index" asp-route-id="@item.Id" class="btn btn-sm btn-success">Fichas</a> |
+                    <a  asp-controller="Sheets" asp-action="Index" asp-route-StudentId="@item.Id" class="btn btn-sm btn-success">Fichas</a> |
                     <a data-id="@item.Id" class="btn btn-sm btn-info editStudent">Editar</a> |
                     <a data-id="@item.Id" class="btn btn-sm btn-danger deleteStudent">Deletar</a>
                 </td>

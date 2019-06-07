@@ -139,6 +139,32 @@ $(function () {
     })
 });
 
+$(function () {
+    $(".createSheet").click(function () {
+        $("#modal").load("/Sheets/Create", function () {
+            $("#modal").modal();
+        })
+    })
+});
+
+$(function () {
+    $(".editSheet").click(function () {
+        var id = $(this).attr("data-id");
+        $("#modal").load("/Sheets/Edit?Id=" + id, function () {
+            $("#modal").modal();
+        })
+    })
+});
+
+$(function () {
+    $(".deleteSheet").click(function () {
+        var id = $(this).attr("data-id");
+        $("#modal").load("/Sheets/Delete?Id=" + id, function () {
+            $("#modal").modal();
+        })
+    })
+});
+
 function k(i) {
     var v = i.value.replace(/\D/g, '');
     v = (v / 100).toFixed(2) + '';

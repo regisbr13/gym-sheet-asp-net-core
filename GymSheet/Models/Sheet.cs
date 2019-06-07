@@ -15,10 +15,12 @@ namespace GymSheet.Models
         [StringLength(15, ErrorMessage = "use até {1} caracteres")]
         public string Name { get; set; }
 
-        [DisplayFormat(DataFormatString ="0:dd/MM/yyyy", ApplyFormatInEditMode =true)]
+        [Display(Name = "Cadastro")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime Register { get; set; }
 
-        [DisplayFormat(DataFormatString = "0:dd/MM/yyyy", ApplyFormatInEditMode = true)]
+        [Display(Name = "Validade")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime Validate { get; set; }
 
         public int StudentId { get; set; }

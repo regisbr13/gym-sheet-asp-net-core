@@ -1,0 +1,64 @@
+﻿@model IEnumerable<GymSheet.Models.Sheet>
+
+@{
+    ViewData["Title"] = "Fichas";
+}
+
+<h2 class="text-center text-primary">Fichas Cadastradas do Aluno <strong>@ViewBag.studentName</strong></h2>
+
+@if (TempData["confirm"] != null)
+{
+    <p class="alert alert-success h6">@TempData["confirm"]</p>
+}
+@if (TempData["erro"] != null)
+{
+    <p class="alert alert-danger h6">@TempData["erro"]</p>
+}
+<hr />
+<p>
+    <a class="btn btn-primary btn-sm createSheet">Cadastrar nova</a>
+</p>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Register)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Validate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Register)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Validate)
+                </td>
+                <td>
+                    <a data-id="@item.Id" class="btn btn-sm btn-info editSheet">Editar</a> |
+                    <a data-id="@item.Id" class="btn btn-sm btn-danger deleteSheet">Deletar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<div class="modal fade" id="modal" role="dialog"></div>
+
+@section Scripts{
+    <script src="~/js/Scripts.js"></script>
+}

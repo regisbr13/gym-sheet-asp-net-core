@@ -58,6 +58,7 @@ namespace GymSheet
             services.AddScoped<TeacherService>();
             services.AddScoped<ObjectiveService>();
             services.AddScoped<StudentService>();
+            services.AddScoped<SheetService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
