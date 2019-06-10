@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace GymSheet.Models
     {
         public int Id { get; set; }
 
+        [Remote("SheetExist", "Sheets", AdditionalFields = "Id")]
         [Required(ErrorMessage = "campo obrigatório")]
         [Display(Name = "Nome")]
         [StringLength(15, ErrorMessage = "use até {1} caracteres")]

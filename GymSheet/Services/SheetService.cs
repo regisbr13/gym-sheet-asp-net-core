@@ -20,5 +20,10 @@ namespace GymSheet.Services
         {
             return await _context.Sheets.Where(s => s.StudentId == id).ToListAsync();
         }
+
+        public async Task<bool> HasAny(int? id, string name)
+        {
+            return await _context.Sheets.AnyAsync(x => x.Id != id && x.Name == name);
+        }
     }
 }

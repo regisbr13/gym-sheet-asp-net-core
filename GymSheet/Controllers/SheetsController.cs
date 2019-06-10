@@ -58,7 +58,7 @@ namespace GymSheet.Controllers
             ViewBag.studentName = (await _studentService.FindByIdAsync(StudentId)).Name;
             TempData["StudentId"] = StudentId;
 
-            return View(list);
+            return View(list.OrderBy(x => x.Id));
         }
 
         // Detalhar Get:
@@ -154,8 +154,9 @@ namespace GymSheet.Controllers
                 {
                     await _sheetService.UpdateAsync(obj);
                     TempData["confirm"] = obj.Name + " foi editado com sucesso.";
-                    list = await _sheetService.FindAllAsync();
-                    _cache.Set("sheet" + obj.StudentId, list, cacheOptions);
+                    var sheet = (_cache.Get("sheet" + obj.StudentId) as List<Sheet>).Find(x => x.Id == obj.Id);
+                    (_cache.Get("sheet" + obj.StudentId) as List<Sheet>).Remove(sheet);
+                    (_cache.Get("sheet" + obj.StudentId) as List<Sheet>).Add(obj);
 
                     return RedirectToAction(nameof(Index), new { StudentId = obj.StudentId });
                 }
@@ -212,7 +213,7 @@ namespace GymSheet.Controllers
                 var obj = (_cache.Get("sheet" + TempData["StudentId"]) as List<Sheet>).Find(x => x.Id == id);
                 TempData["confirm"] = obj.Name + " foi deletado com sucesso.";
                 (_cache.Get("sheet" + TempData["StudentId"]) as List<Sheet>).Remove(obj);
-                return RedirectToAction(nameof(Index), new { StudentId = obj.StudentId });
+                return RedirectToAction(nameof(Index), new { StudentId   = obj.StudentId });
             }
             catch (IntegrityException e)
             {
@@ -229,6 +230,15 @@ namespace GymSheet.Controllers
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             };
             return View(viewModel);
+        }
+
+
+        // Ficha já cadastrado:
+        public async Task<JsonResult> SheetExist(int? Id, string Name)
+        {
+            if (await _sheetService.HasAny(Id, Name))
+                return Json("ficha já cadastrada");
+            return Json(true);
         }
     }
 }
