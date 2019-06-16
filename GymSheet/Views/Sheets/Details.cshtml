@@ -1,0 +1,97 @@
+﻿@model GymSheet.Models.Sheet
+
+@{
+    ViewData["Title"] = "Details";
+}
+<br />
+<div class="row">
+    <div class="container bordered">
+        <h3>Dados do aluno</h3>
+        <hr />
+        <div class="col-md-4">
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Student.Name):</strong> @Html.DisplayFor(model => model.Student.Name)
+            </p>
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Student.Objective.Name):</strong> @Html.DisplayFor(model => model.Student.Objective.Name)
+            </p>
+            <p>
+                <strong>Professor:</strong> @Html.DisplayFor(model => model.Student.Teacher.Name)
+            </p>
+        </div>
+        <div class="col-md-4">
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Student.Age):</strong> @Html.DisplayFor(model => model.Student.Age) anos
+            </p>
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Student.Objective.Observation):</strong> @Html.DisplayFor(model => model.Student.Objective.Observation)
+            </p>
+            <p>
+                <strong>IMC:</strong> @Model.Student.Imc().ToString("F2")
+            </p>
+        </div>
+        <div class="col-md-4">
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Student.Height):</strong> @Html.DisplayFor(model => model.Student.Height) m
+            </p>
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Student.Weight):</strong> @Html.DisplayFor(model => model.Student.Weight) kg
+            </p>
+        </div>
+        <div class="col-md-6 bordered-sup">
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Register):</strong> @Html.DisplayFor(model => model.Register)
+            </p>
+        </div>
+        <div class="col-md-6 bordered-sup">
+            <p>
+                <strong>@Html.DisplayNameFor(model => model.Validate):</strong> @Html.DisplayFor(model => model.Validate)
+            </p>
+        </div>
+    </div>
+</div>
+
+<br />
+<div class="row">
+    <div class="container bordered">
+        <h3>Exercícios</h3>
+        <hr />
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr class="centralized">
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExerciseLists.FirstOrDefault().Exercise.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExerciseLists.FirstOrDefault().Frequency)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExerciseLists.FirstOrDefault().Repetitions)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExerciseLists.FirstOrDefault().Charge)
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                @foreach(var item in Model.ExerciseLists)
+                {
+                    <tr>
+                        <td>
+                            @item.Exercise.Name
+                        </td>
+                        <td>
+                            @item.Frequency série(s)
+                        </td>
+                        <td>
+                            @item.Repetitions x
+                        </td>
+                        <td>
+                            @item.Charge Kg
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

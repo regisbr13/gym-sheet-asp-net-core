@@ -15,7 +15,7 @@ namespace GymSheet.Data.Maps
 
             builder.Property(o => o.Observation).IsRequired(false).HasMaxLength(50);
 
-            builder.HasMany(o => o.Students).WithOne(o => o.Objective);
+            builder.HasMany(o => o.Students).WithOne(o => o.Objective).OnDelete(DeleteBehavior.Restrict);
 
             builder.ToTable("Objetivos");
         }

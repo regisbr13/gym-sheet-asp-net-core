@@ -20,6 +20,6 @@ namespace GymSheet.Models
         [Display(Name = "Grupo muscular")]
         public MuscleGroup MuscleGroup { get; set; }
 
-        public ICollection<ExcerciseList> ExcerciseLists { get; set; }
+        public ICollection<ExerciseList> ExerciseLists { get; set; }
     }
 }

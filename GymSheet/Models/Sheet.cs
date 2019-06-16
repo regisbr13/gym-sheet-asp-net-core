@@ -29,6 +29,6 @@ namespace GymSheet.Models
 
         public Student Student { get; set; }
 
-        public ICollection<ExcerciseList> ExcerciseLists { get; set; }
+        public ICollection<ExerciseList> ExerciseLists { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace GymSheet.Models
 
         [Remote("ObjectiveExist", "Objectives", AdditionalFields = "Id")]
         [Required(ErrorMessage = "campo obrigatório")]
-        [Display(Name = "Nome")]
+        [Display(Name = "Objetivo")]
         [StringLength(50, ErrorMessage = "use até {1} caracteres")]
         public string Name { get; set; }
 

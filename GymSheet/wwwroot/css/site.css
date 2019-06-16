@@ -35,3 +35,17 @@ body {
         display: none;
     }
 }
+
+.bordered{
+    border:solid 1px black
+}
+
+.bordered-sup {
+    border-top: solid 1px black;
+    margin-top:30px;
+    padding:10px;
+}
+
+.centralized > th {
+    text-align:center;
+}

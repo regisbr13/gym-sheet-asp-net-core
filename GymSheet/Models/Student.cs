@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GymSheet.Models
@@ -41,5 +42,10 @@ namespace GymSheet.Models
         public Objective Objective { get; set; }
 
         public ICollection<Sheet> Sheets { get; set; }
+
+        public double Imc()
+        {
+            return Weight / Math.Pow(Height, 2);
+        }
     }
 }

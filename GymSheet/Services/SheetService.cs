@@ -18,7 +18,7 @@ namespace GymSheet.Services
 
         public async Task<List<Sheet>> FindAllAsync(int? id)
         {
-            return await _context.Sheets.Where(s => s.StudentId == id).ToListAsync();
+            return await _context.Sheets.Include(s => s.ExerciseLists).ThenInclude(s => s.Exercise).Include(s => s.Student).ThenInclude(s => s.Objective).Include(s => s.Student).ThenInclude(s => s.Teacher).Where(s => s.StudentId == id).ToListAsync();
         }
 
         public async Task<bool> HasAny(int? id, string name)

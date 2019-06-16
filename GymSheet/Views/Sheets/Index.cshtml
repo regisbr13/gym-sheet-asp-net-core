@@ -48,6 +48,8 @@
                     @Html.DisplayFor(modelItem => item.Validate)
                 </td>
                 <td>
+                    <a asp-action="List" asp-controller="Exercises" asp-route-SheetId="@item.Id" asp-route-StudentId="@item.StudentId" class="btn btn-sm btn-primary ">Novo exercício</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" asp-route-StudentId="@item.StudentId" class="btn btn-sm btn-success">Detalhes</a> |
                     <a data-id="@item.Id" class="btn btn-sm btn-info editSheet">Editar</a> |
                     <a data-id="@item.Id" class="btn btn-sm btn-danger deleteSheet">Deletar</a>
                 </td>

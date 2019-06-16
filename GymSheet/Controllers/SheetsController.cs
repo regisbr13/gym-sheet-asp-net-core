@@ -16,6 +16,7 @@ namespace GymSheet.Controllers
     {
         private readonly SheetService _sheetService;
         private readonly StudentService _studentService;
+        private readonly ExerciseListService _exerciseListService;
         private readonly IMemoryCache _cache;
 
         // Tempo de duração do Cache
@@ -23,10 +24,11 @@ namespace GymSheet.Controllers
         // Lista para guardar cache
         private List<Sheet> list;
 
-        public SheetsController(SheetService sheetService, StudentService studentService, IMemoryCache cache)
+        public SheetsController(SheetService sheetService, StudentService studentService, ExerciseListService exerciseListService, IMemoryCache cache)
         {
             _sheetService = sheetService;
             _studentService = studentService;
+            _exerciseListService = exerciseListService;
             _cache = cache;
         }
 
@@ -56,30 +58,23 @@ namespace GymSheet.Controllers
             }
 
             ViewBag.studentName = (await _studentService.FindByIdAsync(StudentId)).Name;
-            TempData["StudentId"] = StudentId;
 
             return View(list.OrderBy(x => x.Id));
         }
 
         // Detalhar Get:
-        public async Task<IActionResult> Details(int? StudentId)
+        public async Task<IActionResult> Details(int? id, int StudentId)
         {
-            if (StudentId == null)
+            if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id nulo" });
             }
 
-            if (!_cache.TryGetValue("sheet", out list))
-            {
-                list = await _sheetService.FindAllAsync(StudentId);
-                _cache.Set("sheet", list, cacheOptions);
-            }
-            else
-            {
-                list = _cache.Get("sheet") as List<Sheet>;
-            }
+            list = await _sheetService.FindAllAsync(StudentId);
+            _cache.Set("sheet" + StudentId, list, cacheOptions);
 
-            var obj = list.Find(x => x.Id == StudentId);
+            var obj = (_cache.Get("sheet" + StudentId) as List<Sheet>).Find(x => x.Id == id);
+
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
@@ -89,10 +84,10 @@ namespace GymSheet.Controllers
         }
 
         // Criar Get:
-        public IActionResult Create()
+        public IActionResult Create(int StudentId)
         {
-            ViewBag.StudentId = TempData["StudentId"];
-            return View();
+            var obj = new Sheet() { StudentId = StudentId };
+            return View(obj);
         }
 
         // Criar Post: 
@@ -116,25 +111,25 @@ namespace GymSheet.Controllers
         }
 
         // Editar Get:
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int StudentId)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id nulo" });
             }
 
-            ViewBag.StudentId = TempData["StudentId"];
-            if (!_cache.TryGetValue("sheet" + TempData["StudentId"], out list))
+            if (!_cache.TryGetValue("sheet" + StudentId, out list))
             {
-                list = await _sheetService.FindAllAsync(int.Parse(TempData["StudentId"].ToString()));
-                _cache.Set("sheet" + TempData["StudentId"], list, cacheOptions);
+                list = await _sheetService.FindAllAsync(StudentId);
+                _cache.Set("sheet" + StudentId, list, cacheOptions);
             }
             else
             {
-                list = _cache.Get("sheet" + TempData["StudentId"]) as List<Sheet>;
+                list = _cache.Get("sheet" + StudentId) as List<Sheet>;
             }
 
             var obj = list.Find(x => x.Id == id);
+            obj.StudentId = StudentId;
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
@@ -176,43 +171,44 @@ namespace GymSheet.Controllers
         }
 
         // Delete Get:
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int StudentId)
         {
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id nulo" });
             }
 
-            if (!_cache.TryGetValue("sheet" + TempData["StudentId"], out list))
+            if (!_cache.TryGetValue("sheet" + StudentId, out list))
             {
-                list = await _sheetService.FindAllAsync();
-                _cache.Set("sheet" + TempData["StudentId"], list, cacheOptions);
+                list = await _sheetService.FindAllAsync(StudentId);
+                _cache.Set("sheet" + StudentId, list, cacheOptions);
             }
             else
             {
-                list = _cache.Get("sheet" + TempData["StudentId"]) as List<Sheet>;
+                list = _cache.Get("sheet" + StudentId) as List<Sheet>;
             }
 
             var obj = list.Find(x => x.Id == id);
+            obj.StudentId = StudentId;
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
             }
-            TempData["StudentId"] = obj.StudentId;
+
             return View(obj);
         }
 
         // Delete Post: 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, int StudentId)
         {
             try
             {
                 await _sheetService.RemoveAsync(id);
-                var obj = (_cache.Get("sheet" + TempData["StudentId"]) as List<Sheet>).Find(x => x.Id == id);
+                var obj = (_cache.Get("sheet" + StudentId) as List<Sheet>).Find(x => x.Id == id);
                 TempData["confirm"] = obj.Name + " foi deletado com sucesso.";
-                (_cache.Get("sheet" + TempData["StudentId"]) as List<Sheet>).Remove(obj);
+                (_cache.Get("sheet" + StudentId) as List<Sheet>).Remove(obj);
                 return RedirectToAction(nameof(Index), new { StudentId   = obj.StudentId });
             }
             catch (IntegrityException e)
@@ -239,6 +235,36 @@ namespace GymSheet.Controllers
             if (await _sheetService.HasAny(Id, Name))
                 return Json("ficha já cadastrada");
             return Json(true);
+        }
+
+        // Adicionar Exercício à ficha:
+        [HttpGet]
+        public IActionResult AddExercise(int SheetId, int ExerciseId, int StudentId)
+        {
+            ExerciseList obj = new ExerciseList() { ExerciseId = ExerciseId, SheetId = SheetId };
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddExercise(ExerciseList obj, int StudentId)
+        {
+            if (await _exerciseListService.HasExerciseList(obj.SheetId, obj.ExerciseId))
+            {
+                TempData["erro"] = "O exercício já consta na ficha.";
+                return RedirectToAction("List", "Exercises", new { SheetId = obj.SheetId });
+            }
+
+            if (ModelState.IsValid)
+            {
+                TempData["confirm"] = "Exercício adicionado com sucesso.";
+                await _exerciseListService.InsertAsync(obj);
+
+                return RedirectToAction("List", "Exercises", new { SheetId = obj.SheetId });
+            }
+
+            TempData["erro"] = "Erro ao cadastrar.";
+            return RedirectToAction("List", "Exercises", new { SheetId = obj.SheetId });
         }
     }
 }

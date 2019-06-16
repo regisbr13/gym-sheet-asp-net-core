@@ -141,7 +141,9 @@ $(function () {
 
 $(function () {
     $(".createSheet").click(function () {
-        $("#modal").load("/Sheets/Create", function () {
+        var url = new URL(window.location);
+        var StudentId = url.searchParams.get("StudentId");
+        $("#modal").load("/Sheets/Create?StudentId=" + StudentId, function () {
             $("#modal").modal();
         })
     })
@@ -150,7 +152,9 @@ $(function () {
 $(function () {
     $(".editSheet").click(function () {
         var id = $(this).attr("data-id");
-        $("#modal").load("/Sheets/Edit?Id=" + id, function () {
+        var url = new URL(window.location);
+        var StudentId = url.searchParams.get("StudentId");
+        $("#modal").load("/Sheets/Edit?Id=" + id + "&StudentId=" + StudentId, function () {
             $("#modal").modal();
         })
     })
@@ -159,7 +163,9 @@ $(function () {
 $(function () {
     $(".deleteSheet").click(function () {
         var id = $(this).attr("data-id");
-        $("#modal").load("/Sheets/Delete?Id=" + id, function () {
+        var url = new URL(window.location);
+        var StudentId = url.searchParams.get("StudentId");
+        $("#modal").load("/Sheets/Delete?Id=" + id + "&StudentId=" + StudentId, function () {
             $("#modal").modal();
         })
     })
@@ -174,3 +180,14 @@ function k(i) {
     i.value = v;
 }
 
+$(function () {
+    $(".addExercise").click(function () {
+        var id = $(this).attr("data-id");
+        var url = new URL(window.location);
+        var SheetId = url.searchParams.get("SheetId");
+        var StudentId = url.searchParams.get("StudentId");
+        $("#modal").load("/Sheets/AddExercise?ExerciseId=" + id + "&SheetId=" + SheetId + "&StudentId=" + StudentId, function () {
+            $("#modal").modal();
+        })
+    })
+});

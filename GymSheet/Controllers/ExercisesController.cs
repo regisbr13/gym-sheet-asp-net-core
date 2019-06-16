@@ -17,6 +17,7 @@ namespace GymSheet.Controllers
     {
         private readonly ExerciseService _exerciseService;
         private readonly MuscleGroupService _muscleGroupService;
+        private readonly ExerciseListService _exerciseListService;
         private readonly IMemoryCache _cache;
 
         // Tempo de duração do Cache
@@ -25,12 +26,14 @@ namespace GymSheet.Controllers
         private List<Exercise> list;
         private List<MuscleGroup> list2;
 
-        public ExercisesController(ExerciseService exerciseService, MuscleGroupService muscleGroup, IMemoryCache cache)
+        public ExercisesController(ExerciseService exerciseService, MuscleGroupService muscleGroupService, ExerciseListService exerciseListService, IMemoryCache cache)
         {
             _exerciseService = exerciseService;
-            _muscleGroupService = muscleGroup;
+            _muscleGroupService = muscleGroupService;
+            _exerciseListService = exerciseListService;
             _cache = cache;
         }
+
 
         // Listar Get:
         public async Task<IActionResult> Index()
@@ -215,6 +218,15 @@ namespace GymSheet.Controllers
             if (await _exerciseService.HasAny(Id, Name))
                 return Json("exercício já cadastrado");
             return Json(true);
+        }
+
+        // Listar exercícios para seleção:
+        public async Task<IActionResult> List()
+        {
+            var exerciseLists = await _exerciseListService.FindAllAsync();
+            var exercises = await _exerciseService.FindAllAsync();
+            var viewModel = new ExercisesViewModel() { ExerciseLists = exerciseLists, Exercises = exercises };
+            return View(viewModel);
         }
     }
 }

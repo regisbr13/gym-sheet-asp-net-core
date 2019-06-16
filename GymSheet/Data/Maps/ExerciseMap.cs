@@ -15,7 +15,7 @@ namespace GymSheet.Data.Maps
 
             builder.HasOne(e => e.MuscleGroup).WithMany(e => e.Excercises).HasForeignKey(e => e.MuscleGroupId);
 
-            builder.HasMany(e => e.ExcerciseLists).WithOne(e => e.Excercise);
+            builder.HasMany(e => e.ExerciseLists).WithOne(e => e.Exercise);
 
             builder.ToTable("Exercícios");
         }

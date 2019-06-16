@@ -10,7 +10,7 @@ namespace GymSheet.Data
         public DbSet<Student> Students { get; set; }
         public DbSet<MuscleGroup> MuscleGroups { get; set; }
         public DbSet<Exercise> Excercises { get; set; }
-        public DbSet<ExcerciseList> ExcerciseLists { get; set; }
+        public DbSet<ExerciseList> ExerciseLists { get; set; }
         public DbSet<Objective> Objectives { get; set; }
         public DbSet<Sheet> Sheets { get; set; }
         public DbSet<Teacher> Teachers { get; set; }

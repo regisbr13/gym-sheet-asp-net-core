@@ -19,7 +19,7 @@ namespace GymSheet.Data.Maps
 
             builder.HasOne(s => s.Student).WithMany(s => s.Sheets).HasForeignKey(s => s.StudentId);
 
-            builder.HasMany(s => s.ExcerciseLists).WithOne(s => s.Sheet).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(s => s.ExerciseLists).WithOne(s => s.Sheet).OnDelete(DeleteBehavior.Cascade);
 
             builder.ToTable("Fichas");
         }

@@ -1,0 +1,71 @@
+﻿@model GymSheet.Models.ViewModels.ExercisesViewModel
+
+@{
+    ViewData["Title"] = "Exercícios";
+}
+
+<h2 class="text-center text-primary">Escolha os Exercícios</h2>
+
+@if (TempData["confirm"] != null)
+{
+    <p class="alert alert-success h6">@TempData["confirm"]</p>
+}
+@if (TempData["erro"] != null)
+{
+    <p class="alert alert-danger h6">@TempData["erro"]</p>
+}
+
+<hr />
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Exercises.FirstOrDefault().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Exercises.FirstOrDefault().MuscleGroup)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Exercises.OrderBy(x => x.Name))
+        {
+            if (Model.ExerciseLists.Any(x => x.ExerciseId == item.Id))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MuscleGroup.Name)
+                    </td>
+                    <td>
+                        <a data-id="@item.Id" class="btn btn-primary btn-sm  disabled">Já adicionado</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MuscleGroup.Name)
+                    </td>
+                    <td>
+                        <a data-id="@item.Id" class="btn btn-primary btn-sm addExercise">Adicionar</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="modal" role="dialog"></div>
+
+@section Scripts{
+    <script src="~/js/Scripts.js"></script>
+}
