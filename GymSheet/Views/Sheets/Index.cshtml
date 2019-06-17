@@ -4,7 +4,8 @@
     ViewData["Title"] = "Fichas";
 }
 
-<h2 class="text-center text-primary">Fichas Cadastradas do Aluno <strong>@ViewBag.studentName</strong></h2>
+<h2 class="text-center text-primary">Fichas Cadastradas do Aluno</h2>
+<h3 class="text-center">@ViewBag.studentName</h3>
 
 @if (TempData["confirm"] != null)
 {
@@ -50,6 +51,7 @@
                 <td>
                     <a asp-action="List" asp-controller="Exercises" asp-route-SheetId="@item.Id" asp-route-StudentId="@item.StudentId" class="btn btn-sm btn-primary ">Novo exercício</a> |
                     <a asp-action="Details" asp-route-id="@item.Id" asp-route-StudentId="@item.StudentId" class="btn btn-sm btn-success">Detalhes</a> |
+                    <a asp-action="Pdf" asp-route-SheetId="@item.Id" asp-route-StudentId="@item.StudentId" class="btn btn-sm btn-warning ">Pdf da ficha</a> |
                     <a data-id="@item.Id" class="btn btn-sm btn-info editSheet">Editar</a> |
                     <a data-id="@item.Id" class="btn btn-sm btn-danger deleteSheet">Deletar</a>
                 </td>

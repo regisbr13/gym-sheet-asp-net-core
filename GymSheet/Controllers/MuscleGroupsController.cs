@@ -16,6 +16,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace GymSheet.Controllers
 {
+    [Authorize]
     public class MuscleGroupsController : Controller
     {
         private readonly MuscleGroupService _muscleGroupService;
@@ -33,7 +34,7 @@ namespace GymSheet.Controllers
         }
 
         // Listar Get:
-        [Authorize]
+        [HttpGet("Grupo-Muscular")]
         public async Task<IActionResult> Index()
         {
             if (!_cache.TryGetValue("muscleGroup", out list))
@@ -45,12 +46,6 @@ namespace GymSheet.Controllers
             {
                 list = _cache.Get("muscleGroup") as List<MuscleGroup>;
             }
-
-            HttpContext.Session.SetString("Email", "admin@admin.com");
-            var claims = new List<Claim>() { new Claim(ClaimTypes.Email, "admin@admin.com") };
-            var user = new ClaimsIdentity(claims, "login");
-            ClaimsPrincipal principal = new ClaimsPrincipal(user);
-            await HttpContext.SignInAsync(principal);
 
             return View(list);
         }
@@ -182,6 +177,7 @@ namespace GymSheet.Controllers
         }
 
         // Tratamento de erros:
+        [HttpGet("Grupo-Muscular/Erro")]
         public IActionResult Error(string message)
         {
             var viewModel = new ErrorViewModel

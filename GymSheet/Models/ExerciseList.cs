@@ -17,7 +17,7 @@ namespace GymSheet.Models
         public int Repetitions { get; set; }
 
         [Required(ErrorMessage = "campo obrigatório")]
-        [Display(Name = "Carga")]
+        [Display(Name = "Carga (Kg)")]
         [Range(1, 200, ErrorMessage = "carga inválida")]
         public int Charge { get; set; }
 

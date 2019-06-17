@@ -7,11 +7,15 @@ using GymSheet.Models;
 using GymSheet.Models.ViewModels;
 using GymSheet.Services;
 using GymSheet.Services.Exceptions;
+using jsreport.AspNetCore;
+using jsreport.Types;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace GymSheet.Controllers
 {
+    [Authorize]
     public class SheetsController : Controller
     {
         private readonly SheetService _sheetService;
@@ -34,6 +38,7 @@ namespace GymSheet.Controllers
 
 
         // Listar Get:
+        [HttpGet("Fichas")]
         public async Task<IActionResult> Index(int? StudentId)
         {
             if (StudentId == null)
@@ -63,6 +68,7 @@ namespace GymSheet.Controllers
         }
 
         // Detalhar Get:
+        [HttpGet("Fichas/Detalhes")]
         public async Task<IActionResult> Details(int? id, int StudentId)
         {
             if (id == null)
@@ -265,6 +271,25 @@ namespace GymSheet.Controllers
 
             TempData["erro"] = "Erro ao cadastrar.";
             return RedirectToAction("List", "Exercises", new { SheetId = obj.SheetId });
+        }
+
+        // Gerar Pdf:
+        [HttpGet("Fichas/Pdf")]
+        [MiddlewareFilter(typeof(JsReportPipeline))]
+        public async Task<IActionResult> Pdf(int SheetId, int StudentId)
+        {
+            list = await _sheetService.FindAllAsync(StudentId);
+            _cache.Set("sheet" + StudentId, list, cacheOptions);
+
+            var obj = (_cache.Get("sheet" + StudentId) as List<Sheet>).Find(x => x.Id == SheetId);
+
+            if (obj == null)
+            {
+                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
+            }
+            HttpContext.JsReportFeature().Recipe(Recipe.ChromePdf);
+
+            return View(obj);
         }
     }
 }

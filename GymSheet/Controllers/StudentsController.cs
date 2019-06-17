@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using GymSheet.Models;
 using GymSheet.Models.ViewModels;
 using GymSheet.Services;
 using GymSheet.Services.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace GymSheet.Controllers
 {
+    [Authorize]
     public class StudentsController : Controller
     {
         private readonly StudentService _studentService;
@@ -37,6 +38,7 @@ namespace GymSheet.Controllers
 
 
         // Listar Get:
+        [HttpGet("Alunos")]
         public async Task<IActionResult> Index()
         {
             if (!_cache.TryGetValue("student", out list))
@@ -254,6 +256,7 @@ namespace GymSheet.Controllers
         }
 
         // Tratamento de erros:
+        [HttpGet("/Alunos/Erro")]
         public IActionResult Error(string message)
         {
             var viewModel = new ErrorViewModel

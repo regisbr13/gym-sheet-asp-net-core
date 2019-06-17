@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using GymSheet.Models;
 using GymSheet.Models.ViewModels;
 using GymSheet.Services;
-using GymSheet.Services.Exceptions;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace GymSheet.Controllers
 {
@@ -25,13 +23,14 @@ namespace GymSheet.Controllers
         }
 
         // Registrar Get:
+        [HttpGet("/Registrar")]
         public IActionResult Register()
         {
             return View();
         }
 
         // Registrar Post: 
-        [HttpPost]
+        [HttpPost("/Registrar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(Administrator obj)
         {
@@ -71,7 +70,7 @@ namespace GymSheet.Controllers
                 var user = new ClaimsIdentity(claims, "login");                                      
                 ClaimsPrincipal principal = new ClaimsPrincipal(user);                              
                 await HttpContext.SignInAsync(principal);                                           
-                return RedirectToAction("Index", "MuscleGroups");
+                return RedirectToAction("Index", "Students");
             }
             else
             {
@@ -81,6 +80,8 @@ namespace GymSheet.Controllers
         }
 
         // Desautenticar:
+        [Authorize]
+        [HttpGet("/Sair")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
@@ -89,7 +90,7 @@ namespace GymSheet.Controllers
         }
 
         // Editar Post:
-        [HttpPost]
+        [HttpPost("/Sair")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Administrator obj)
         {
@@ -116,6 +117,7 @@ namespace GymSheet.Controllers
             return RedirectToAction(nameof(Informations));
         }
 
+        [HttpGet("/Informacoes")]
         public async Task<IActionResult> Informations()
         {
             var obj = await _administratorService.FindByEmail(HttpContext.Session.GetString("Email"));
@@ -129,6 +131,7 @@ namespace GymSheet.Controllers
         }
 
         // Tratamento de erros:
+        [HttpGet("/Erro")]
         public IActionResult Error(string message)
         {
             var viewModel = new ErrorViewModel

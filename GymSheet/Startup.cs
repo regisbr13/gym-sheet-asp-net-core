@@ -14,6 +14,9 @@ using GymSheet.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Rotativa.AspNetCore;
 using GymSheet.Services;
+using jsreport.AspNetCore;
+using jsreport.Local;
+using jsreport.Binary;
 
 namespace GymSheet
 {
@@ -60,6 +63,11 @@ namespace GymSheet
             services.AddScoped<StudentService>();
             services.AddScoped<SheetService>();
             services.AddScoped<ExerciseListService>();
+
+            services.AddJsReport(new LocalReporting()
+             .UseBinary(JsReportBinary.GetBinary())
+             .AsUtility()
+             .Create());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,7 +95,7 @@ namespace GymSheet
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=MuscleGroups}/{action=Index}/{id?}");
+                    template: "{controller=Administrators}/{action=Login}/{id?}");
             });
         }
     }

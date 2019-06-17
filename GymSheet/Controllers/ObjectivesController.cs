@@ -7,11 +7,13 @@ using GymSheet.Models;
 using GymSheet.Models.ViewModels;
 using GymSheet.Services;
 using GymSheet.Services.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace GymSheet.Controllers
 {
+    [Authorize]
     public class ObjectivesController : Controller
     {
         private readonly ObjectiveService _objectiveService;
@@ -29,6 +31,7 @@ namespace GymSheet.Controllers
         }
 
         // Listar Get:
+        [HttpGet("Objetivos")]
         public async Task<IActionResult> Index()
         {
             if (!_cache.TryGetValue("objective", out list))
@@ -172,6 +175,7 @@ namespace GymSheet.Controllers
         }
 
         // Tratamento de erros:
+        [HttpGet("Objetivos/Erro")]
         public IActionResult Error(string message)
         {
             var viewModel = new ErrorViewModel

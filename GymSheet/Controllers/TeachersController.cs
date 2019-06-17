@@ -8,6 +8,7 @@ using GymSheet.Models;
 using GymSheet.Models.ViewModels;
 using GymSheet.Services;
 using GymSheet.Services.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace GymSheet.Controllers
 {
+    [Authorize]
     public class TeachersController : Controller
     {
         private readonly TeacherService _teacherService;
@@ -34,6 +36,7 @@ namespace GymSheet.Controllers
         }
 
         // Listar Get:
+        [HttpGet("Professores")]
         public async Task<IActionResult> Index()
         {
             if (!_cache.TryGetValue("teacher", out list))
@@ -46,33 +49,6 @@ namespace GymSheet.Controllers
                 list = _cache.Get("teacher") as List<Teacher>;
             }
             return View(list);
-        }
-
-        // Detalhar Get:
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id nulo" });
-            }
-
-            if (!_cache.TryGetValue("teacher", out list))
-            {
-                list = await _teacherService.FindAllAsync();
-                _cache.Set("teacher", list, cacheOptions);
-            }
-            else
-            {
-                list = _cache.Get("teacher") as List<Teacher>;
-            }
-
-            var obj = list.Find(x => x.Id == id);
-            if (obj == null)
-            {
-                return RedirectToAction(nameof(Error), new { message = "Id não encontrado" });
-            }
-
-            return View(obj);
         }
 
         // Criar Get:
@@ -232,6 +208,7 @@ namespace GymSheet.Controllers
         }
 
         // Tratamento de erros:
+        [HttpGet("Professores/Erro")]
         public IActionResult Error(string message)
         {
             var viewModel = new ErrorViewModel
